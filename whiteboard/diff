@@ -1,0 +1,92 @@
+## Result of `diff whiteboard/hoge.c.bak whiteboard/pckmon2.c.bak`
+2d1
+< #include <stdlib.h>
+16c15
+< int sock ;
+---
+> int rsock ;
+18d16
+< int
+19a18
+> 
+28c27
+<   if ((sock = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL))) < 0 ){
+---
+>   if ((rsock = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_IP))) < 0 ){
+30c29
+<     exit(1);
+---
+>     exit(0);
+35c34
+<   if(ioctl(sock, SIOCGIFINDEX, &ifr) < 0 ){
+---
+>   if(ioctl(rsock, SIOCGIFINDEX, &ifr) < 0 ){
+37c36
+<     exit(1);
+---
+>     exit(0);
+40d38
+<   memset(&mreq,0,sizeof(mreq));
+42a41,42
+>   mreq.mr_alen = 0;
+>   mreq.mr_address[0] ='\0';
+44c44
+<   if((setsockopt(sock,SOL_PACKET,PACKET_ADD_MEMBERSHIP,(void *)&mreq,sizeof(mreq))) < 0){
+---
+>   if( (setsockopt(rsock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, (void *)&mreq, sizeof(mreq))) < 0){
+46c46
+<     exit(1);
+---
+>     exit(0);
+52,57c52,55
+< /***********************************************
+<  * recv_pkt()
+<  * Receive and display packets
+<  ***********************************************/
+< void
+< recv_pkt()
+---
+> /*
+>  * Receiving  packet
+>  */
+> void recv_pkt()
+64c62,63
+<   struct buf  {
+---
+>   struct buf
+>   {
+73c72
+<   FD_SET(sock, &fds);
+---
+>   FD_SET(rsock, &fds);
+76c75,76
+<     if( select(sock + 1, &fds , NULL, NULL, NULL) < 0 ){
+---
+> 
+>     if( select(rsock + 1, &fds , NULL, NULL, NULL) < 0 ){
+78c78
+<       exit(1);
+---
+>       exit(0);
+81,82c81,82
+<     if ( FD_ISSET(sock, &fds)){
+<       if(recvfrom(sock,&buf,sizeof(buf),0,(struct sockaddr *)&rsin,&rsin_size) < 0 ){
+---
+>     if ( FD_ISSET(rsock, &fds)){
+>       if(recvfrom(rsock, &buf, sizeof(buf), 0, (struct sockaddr *)&rsin, &rsin_size) < 0 ) {
+85,87c85
+<       /*
+<        * Ignore the packets other than TCP
+<        */
+---
+> 
+89a88
+> 
+92a92
+> 
+124c124
+<   } /* for() loop */
+---
+>   }
+125a126
+> 
